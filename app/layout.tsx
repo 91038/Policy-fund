@@ -17,6 +17,24 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
+      <head>
+        {/* Danggeun Market Code */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                var script = document.createElement('script');
+                script.src = 'https://karrot-pixel.business.daangn.com/0.4/karrot-pixel.umd.js';
+                script.onload = function() {
+                  window.karrotPixel.init('1754445139599400001');
+                  window.karrotPixel.track('ViewPage');
+                };
+                document.head.appendChild(script);
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className={inter.className}>
         {children}
         <Footer />
