@@ -16,6 +16,7 @@ export default function HomePage() {
     businessNumber: '',
     privacyAgree: false
   })
+  const [showScrollButton, setShowScrollButton] = useState(false)
   const [applications, setApplications] = useState([
     { name: '김**', time: '방금 전', location: '서울' },
     { name: '이**', time: '1분 전', location: '부산' },
@@ -78,6 +79,21 @@ export default function HomePage() {
     return () => clearInterval(interval)
   }, [])
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollButton(window.scrollY > 300)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const scrollToForm = () => {
+    const formSection = document.getElementById('consultation-form')
+    if (formSection) {
+      formSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -119,7 +135,7 @@ export default function HomePage() {
   }
 
   return (
-    <main className="overflow-x-hidden">
+    <main className="overflow-x-hidden relative">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary via-blue-500 to-primary min-h-screen flex items-center">
         <div className="absolute inset-0 bg-black/10"></div>
@@ -606,7 +622,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary to-blue-600 text-white relative overflow-hidden">
+      <section id="consultation-form" className="py-20 bg-gradient-to-br from-primary to-blue-600 text-white relative overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl"></div>
@@ -797,6 +813,56 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Fixed Scroll Button - Bottom Center */}
+      <motion.div
+        initial={{ opacity: 0, y: 100 }}
+        animate={{ 
+          opacity: showScrollButton ? 1 : 0, 
+          y: showScrollButton ? 0 : 100
+        }}
+        transition={{ duration: 0.3 }}
+        className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4"
+        style={{ 
+          pointerEvents: showScrollButton ? 'auto' : 'none'
+        }}
+      >
+        <motion.button
+          onClick={scrollToForm}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full max-w-2xl mx-auto bg-gradient-to-r from-accent to-yellow-400 text-gray-900 font-bold text-lg py-4 px-8 rounded-full shadow-2xl flex items-center justify-center gap-3 hover:shadow-3xl transition-all"
+          style={{ 
+            boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
+          }}
+        >
+          <motion.span
+            animate={{ rotate: [0, 10, -10, 0] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="text-2xl"
+          >
+            📝
+          </motion.span>
+          <span>지금 바로 무료 상담 신청하기</span>
+          <motion.span
+            animate={{ x: [0, 5, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+            className="text-xl"
+          >
+            →
+          </motion.span>
+        </motion.button>
+        
+        {/* Glow Effect */}
+        <motion.div
+          animate={{ opacity: [0.3, 0.6, 0.3] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="absolute inset-0 px-4 pb-4"
+          style={{ pointerEvents: 'none' }}
+        >
+          <div className="w-full max-w-2xl mx-auto h-full bg-gradient-to-r from-accent/30 to-yellow-400/30 rounded-full blur-xl" />
+        </motion.div>
+      </motion.div>
     </main>
   )
 }
